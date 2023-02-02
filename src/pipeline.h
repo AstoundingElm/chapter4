@@ -23,13 +23,13 @@ PINLINE bool read_shader_file(){
 	shader_data.vert_file = NULL;
 	shader_data.frag_file = NULL;
 	shader_data.geom_file = NULL;
-	shader_data.vert_file = fopen("/home/petermiller/Desktop/4coder/grcb/src/vert.spv", "rb+");
+	shader_data.vert_file = fopen("/home/petermiller/Desktop/4coder/chapter4/src/VK02_ImGui.vert.spv", "rb+");
 	if(!shader_data.vert_file){
 		printf("fail");
 	}
-	shader_data.frag_file = fopen("/home/petermiller/Desktop/4coder/grcb/src/frag.spv", "rb+");
-	
-	shader_data.geom_file = fopen("/home/petermiller/Desktop/4coder/grcb/src/geom.spv", "rb+");
+	shader_data.frag_file = fopen("/home/petermiller/Desktop/4coder/chapter4/src/VK02_ImGui.frag.spv", "rb+");
+	/*
+	shader_data.geom_file = fopen("/home/petermiller/Desktop/4coder/grcb/src/geom.spv", "rb+");*/
 	
 	if (shader_data.vert_file == NULL || shader_data.frag_file == NULL) {
 		
@@ -38,26 +38,26 @@ PINLINE bool read_shader_file(){
 	};
 	fseek(shader_data.vert_file, 0, SEEK_END);
 	fseek(shader_data.frag_file, 0, SEEK_END);
-	fseek(shader_data.geom_file, 0, SEEK_END);
+	//fseek(shader_data.geom_file, 0, SEEK_END);
 	
 	shader_data.vert_size = ftell(shader_data.vert_file);
 	shader_data.frag_size = ftell(shader_data.frag_file);
-	shader_data.geom_size = ftell(shader_data.geom_file);
+	//shader_data.geom_size = ftell(shader_data.geom_file);
 	
 	shader_data.vert_code = (char *)malloc(shader_data.vert_size * sizeof(char));
 	shader_data.frag_code = (char *)malloc(shader_data.frag_size * sizeof(char));
-	shader_data.geom_code = (char *)malloc(shader_data.geom_size * sizeof(char));
+	//shader_data.geom_code = (char *)malloc(shader_data.geom_size * sizeof(char));
 	
 	rewind(shader_data.vert_file);
 	rewind(shader_data.frag_file);
-	rewind(shader_data.geom_file);
+	//rewind(shader_data.geom_file);
 	fread(shader_data.vert_code, 1, shader_data.vert_size, shader_data.vert_file);
 	fread(shader_data.frag_code, 1, shader_data.frag_size, shader_data.frag_file);
-	fread(shader_data.geom_code, 1, shader_data.geom_size, shader_data.geom_file);
+	//fread(shader_data.geom_code, 1, shader_data.geom_size, shader_data.geom_file);
 	
 	fclose(shader_data.vert_file);
 	fclose(shader_data.frag_file);
-	fclose(shader_data.geom_file);
+	//fclose(shader_data.geom_file);
 	return true;
 };
 
@@ -166,7 +166,7 @@ bool createGraphicsPipeline(
 	}
 	VkShaderModule vertMod = {};
 	VkShaderModule fragMod = {};
-	VkShaderModule geomMod = {};
+	//VkShaderModule geomMod = {};
 	
 	
 	VkShaderModuleCreateInfo vertInfo = create_shader_module_info(NULL, 0, shader_data.vert_size, (const u32*)shader_data.vert_code);
@@ -184,14 +184,14 @@ bool createGraphicsPipeline(
 	vkCreateShaderModule(vkDev.device, &fragInfo, nullptr, &fragMod);
 	
 	
-	const VkShaderModuleCreateInfo geomInfo =
+	/*const VkShaderModuleCreateInfo geomInfo =
 	{
 		.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO,
 		.codeSize = shader_data.geom_size,
 		.pCode = (uint32_t*)shader_data.geom_code,
 	};
 	
-	vkCreateShaderModule(vkDev.device, &geomInfo, nullptr, &geomMod);
+	vkCreateShaderModule(vkDev.device, &geomInfo, nullptr, &geomMod);*/
 	
 	VkPipelineShaderStageCreateInfo vertShaderInfo{
 		.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
@@ -214,7 +214,7 @@ bool createGraphicsPipeline(
 		.pSpecializationInfo = nullptr
 	};
 	
-	
+	/*
 	VkPipelineShaderStageCreateInfo geomShaderInfo{
 		.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
 		.pNext = nullptr,
@@ -223,9 +223,9 @@ bool createGraphicsPipeline(
 		.module =  geomMod,
 		.pName = "main",
 		.pSpecializationInfo = nullptr
-	};
+	};*/
 	
-	VkPipelineShaderStageCreateInfo shaderStages[3]  { vertShaderInfo, fragShaderInfo, geomShaderInfo,};
+	VkPipelineShaderStageCreateInfo shaderStages[3]  { vertShaderInfo, fragShaderInfo};
 	
 	
 	const VkPipelineVertexInputStateCreateInfo vertexInputInfo = {
